@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://b8x4kba3l16aq"]
+
+[ext_resource type="Script" uid="uid://bynscgky0yv14" path="res://Scripts/ball_train_body.gd" id="2_qs6ju"]
+
+[sub_resource type="GDScript" id="GDScript_i84mg"]
+script/source = "extends Node3D
+
+var timeAlive = 0
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	timeAlive += delta
+
+func getTotalTime():
+	return timeAlive
+"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_lgi70"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_i84mg"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qs6ju"]
+albedo_color = Color(0.794023, 0, 0.194053, 1)
+
+[node name="BallTrain" type="Node3D"]
+script = SubResource("GDScript_i84mg")
+
+[node name="BallTrainBody" type="RigidBody3D" parent="."]
+gravity_scale = 0.0
+script = ExtResource("2_qs6ju")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BallTrainBody"]
+shape = SubResource("SphereShape3D_lgi70")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BallTrainBody/CollisionShape3D"]
+mesh = SubResource("SphereMesh_i84mg")
+surface_material_override/0 = SubResource("StandardMaterial3D_qs6ju")

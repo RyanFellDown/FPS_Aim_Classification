@@ -1,0 +1,95 @@
+[gd_scene load_steps=10 format=3 uid="uid://bmlg6xhxtklb4"]
+
+[ext_resource type="PackedScene" uid="uid://bs72ogkvdd7d6" path="res://Addons/proto_controller/proto_controller.tscn" id="1_a4wp2"]
+[ext_resource type="Script" uid="uid://dcgfvnhw3b4v" path="res://Scripts/aim_level.gd" id="1_unb7u"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_unb7u"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_7k7q1"]
+sky_material = SubResource("ProceduralSkyMaterial_unb7u")
+
+[sub_resource type="Environment" id="Environment_0ubgr"]
+background_mode = 2
+sky = SubResource("Sky_7k7q1")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_unb7u"]
+albedo_color = Color(0.439049, 0.439049, 0.439049, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ubgr"]
+albedo_color = Color(0.601223, 0.601223, 0.601223, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7k7q1"]
+albedo_color = Color(0.933333, 0.262745, 0, 1)
+
+[sub_resource type="GDScript" id="GDScript_unb7u"]
+script/source = "extends Timer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[node name="AimTrainer" type="Node3D"]
+script = ExtResource("1_unb7u")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0ubgr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.985594, 0.161339, 0.0507354, -0.0384798, -0.0782013, 0.996195, 0.164692, -0.983796, -0.0708664, 0, 22.6, 0)
+shadow_enabled = true
+
+[node name="World Colliders" type="Node" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="World Colliders"]
+transform = Transform3D(53.9784, 0, 0, 0, 1.4, 0, 0, 0, 83.281, 0, -0.5, 1.4)
+use_collision = true
+material = SubResource("StandardMaterial3D_unb7u")
+
+[node name="Wall" type="CSGBox3D" parent="World Colliders"]
+transform = Transform3D(26, 0, 0, 0, 10, 0, 0, 0, 1, 0, 5, -16.4)
+use_collision = true
+material = SubResource("StandardMaterial3D_0ubgr")
+
+[node name="Wall3" type="CSGBox3D" parent="World Colliders"]
+transform = Transform3D(26, 0, 0, 0, 10, 0, 0, 0, 1, 0, 5, 17.7)
+use_collision = true
+material = SubResource("StandardMaterial3D_0ubgr")
+
+[node name="Wall2" type="CSGBox3D" parent="World Colliders"]
+transform = Transform3D(-1.47744e-06, 0, 1, 0, 10, 0, -33.8, 0, -4.37114e-08, 13.4, 5, 0.8)
+use_collision = true
+material = SubResource("StandardMaterial3D_0ubgr")
+
+[node name="Little Barrier" type="CSGBox3D" parent="World Colliders"]
+transform = Transform3D(-1.47744e-06, 0, 1, 0, 10, 0, -33.8, 0, -4.37114e-08, 1.1, 0.5, 0.8)
+use_collision = true
+size = Vector3(1, 0.08, 1)
+material = SubResource("StandardMaterial3D_7k7q1")
+
+[node name="Wall4" type="CSGBox3D" parent="World Colliders"]
+transform = Transform3D(-1.47744e-06, 0, 1, 0, 10, 0, -33.8, 0, -4.37114e-08, -12.5, 5, 0.8)
+use_collision = true
+material = SubResource("StandardMaterial3D_0ubgr")
+
+[node name="Doorway" type="CSGCylinder3D" parent="World Colliders/Wall4"]
+transform = Transform3D(0.18, -1.11022e-16, 3.30872e-24, 0, -4.37114e-08, -0.85, 1.13687e-13, 1, -3.71547e-08, 0, -0.47, 0)
+operation = 2
+
+[node name="ProtoController" parent="." instance=ExtResource("1_a4wp2")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -4.6, 0, 0)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 15.0
+one_shot = true
+script = SubResource("GDScript_unb7u")

@@ -1,0 +1,65 @@
+[gd_scene load_steps=9 format=3 uid="uid://bs72ogkvdd7d6"]
+
+[ext_resource type="Script" uid="uid://rtldt5mov4sg" path="res://Addons/proto_controller/proto_controller.gd" id="1_ucva2"]
+[ext_resource type="Script" uid="uid://blebo3dwduwca" path="res://Addons/proto_controller/camera_3d.gd" id="2_mpk8l"]
+[ext_resource type="Texture2D" uid="uid://ian18mglxipx" path="res://Sprites/Crosshair.png" id="3_62upf"]
+[ext_resource type="AudioStream" uid="uid://bc2u2spr5fcoq" path="res://Sounds/VandalShot.WAV" id="4_64ncp"]
+[ext_resource type="AudioStream" uid="uid://v13vbujeqpip" path="res://Sounds/BallBreak.WAV" id="5_1x0i6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iof21"]
+albedo_color = Color(0.259836, 0.732077, 0.856659, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ucva2"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iof21"]
+radius = 0.4
+height = 1.8
+
+[node name="ProtoController" type="CharacterBody3D"]
+script = ExtResource("1_ucva2")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+material_override = SubResource("StandardMaterial3D_iof21")
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_ucva2")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_iof21")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+script = ExtResource("2_mpk8l")
+
+[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, -1.49012e-08, -1, 0, 1, -1.49012e-08, 0, 0, 0)
+target_position = Vector3(0, -50, 0)
+collision_mask = 2
+
+[node name="TextureRect" type="TextureRect" parent="Head/Camera3D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_62upf")
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="GunNoise" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("4_64ncp")
+volume_db = -6.191
+
+[node name="BallNoise" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("5_1x0i6")

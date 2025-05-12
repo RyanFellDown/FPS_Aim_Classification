@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://pqusbehjoj1i"]
+
+[ext_resource type="Script" uid="uid://cd4uuciub3cu2" path="res://Scripts/enemy.gd" id="1_u8k0i"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5hjt1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u8k0i"]
+albedo_color = Color(0.94902, 0.117647, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_rxcki"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u8k0i"]
+
+[node name="Enemy" type="CharacterBody3D"]
+script = ExtResource("1_u8k0i")
+
+[node name="General Shape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_5hjt1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+material_override = SubResource("StandardMaterial3D_u8k0i")
+mesh = SubResource("CapsuleMesh_rxcki")
+
+[node name="Hitbox" type="Area3D" parent="MeshInstance3D"]
+
+[node name="Shape" type="CollisionShape3D" parent="MeshInstance3D/Hitbox"]
+shape = SubResource("CapsuleShape3D_u8k0i")
