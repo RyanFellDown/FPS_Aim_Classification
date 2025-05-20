@@ -7,6 +7,10 @@ extends Node3D
 @onready var start_button = $UI/StartUI/Button
 @onready var end_ui = $UI/EndUI
 @onready var results_container = $UI/EndUI/Panel/VBoxContainer
+@onready var resume_button: Button = $UI/PauseUI/Button
+@onready var quit_button: Button = $UI/PauseUI/Button2
+@onready var pause_ui: Control = $UI/PauseUI
+@onready var replay_button: Button = $UI/EndUI/Button
 
 
 var training_started = false
@@ -19,18 +23,27 @@ var initialTime
 var displayed = false
 var totalGenerated = 0
 var isPresent = true
+var paused = false
 var stats
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	timer = $Timer
 	start_button.pressed.connect(_on_start_pressed)
+	replay_button.pressed.connect(_on_replay_pressed)
 	timer.timeout.connect(_on_training_ended)
+	if not timer.timeout.is_connected(_on_training_ended):
+		timer.timeout.connect(_on_training_ended)
+		
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	end_ui.visible = false
+	pause_ui.hide()
 
 
 func _on_start_pressed():
+	print("Start button pressed!")
+	Engine.time_scale = 1
 	# Hide the ball spawner logic or pause it here too.
 	start_ui.visible = false
 	timer.start()
@@ -41,7 +54,13 @@ func _on_start_pressed():
 	print(initialTime)
 
 
+func _on_replay_pressed() -> void:
+	get_tree().reload_current_scene()
+
+
 func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("pause"):
+		pauseMenu()
 	#Check the current time each frame and if there is a ball present.
 	currentTime = timer.time_left
 	isPresent = camera_3d.isBallPresent()
@@ -57,6 +76,21 @@ func _process(delta: float) -> void:
 	if currentTime == 0.0 and displayed == false and training_started:
 		proto_controller.disablePlayer(true)
 		displayed = true
+
+
+func pauseMenu():
+	if paused:
+		pause_ui.hide()
+		#get the mouse back AND stop raycast shooting
+		proto_controller.disablePlayer(false)
+		proto_controller.capture_mouse()
+		Engine.time_scale = 1
+	else:
+		pause_ui.show()
+		proto_controller.disablePlayer(true)
+		Engine.time_scale = 0
+	
+	paused = !paused
 
 
 #Spawn a ball in a random range in front of the players
@@ -79,7 +113,8 @@ func _on_training_ended():
 	var totalMissed = float(results["Overshoot"] + results["Undershoot"])
 	var overshot = float(results["Overshoot"])/totalMissed
 	var undershot = float(results["Undershoot"])/totalMissed
-	end_ui.visible = true
+	end_ui.show()
+
 	
 	#Returns a dictionary of all the stats; lowk more effecient to do this in the camera, but I can't be bothered.
 	stats = {

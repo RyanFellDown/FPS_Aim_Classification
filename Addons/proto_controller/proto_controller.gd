@@ -71,7 +71,7 @@ func _ready() -> void:
 
 
 func disablePlayer(boolDisable):
-	disablePlayerMovements = true
+	disablePlayerMovements = boolDisable
 
 
 
@@ -79,10 +79,13 @@ func disablePlayer(boolDisable):
 func hasStarted():
 	return aim_trainer.training_started
 
-
 #Just checking if the game's ended yet; if so, then don't allow raycasts for the camera (aka no score updates).
 func hasEnded():
 	return aim_trainer.training_ended
+
+func hasPaused():
+	return aim_trainer.paused
+
 
 func getMouseVelocity():
 	var finalTopVelocity = mouseVelocity
@@ -159,9 +162,12 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		
 		
-	if aim_trainer.training_started and not capturingMouse:
+	if aim_trainer.training_started and not aim_trainer.training_ended and not capturingMouse:
 		capture_mouse()
 		capturingMouse = true
+	elif aim_trainer.training_started and aim_trainer.training_ended and capturingMouse:
+		release_mouse()
+		capturingMouse = false
 
 
 ## Rotate us to look around.

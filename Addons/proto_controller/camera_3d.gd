@@ -56,7 +56,8 @@ func _process(delta: float) -> void:
 func _input(event):
 	var gameStart = proto_controller.hasStarted()
 	var gameEnd = proto_controller.hasEnded()
-	if event.is_action_pressed("shoot") and gameStart and not gameEnd:
+	var gamePaused = proto_controller.hasPaused()
+	if event.is_action_pressed("shoot") and gameStart and not gameEnd and not gamePaused:
 		shotsTaken += 1
 		gun_noise.play()
 		GetCameraCollision()

@@ -1,8 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://bmlg6xhxtklb4"]
+[gd_scene load_steps=13 format=3 uid="uid://bmlg6xhxtklb4"]
 
 [ext_resource type="PackedScene" uid="uid://bs72ogkvdd7d6" path="res://Addons/proto_controller/proto_controller.tscn" id="1_a4wp2"]
 [ext_resource type="Script" uid="uid://dcgfvnhw3b4v" path="res://Scripts/aim_level.gd" id="1_unb7u"]
+[ext_resource type="Script" uid="uid://40j8byncmpmd" path="res://Scripts/pause_ui.gd" id="3_0ubgr"]
 [ext_resource type="AudioStream" uid="uid://bc2u2spr5fcoq" path="res://Sounds/VandalShot.WAV" id="3_7k7q1"]
+[ext_resource type="Script" uid="uid://dmu85njlepofj" path="res://Nodes/end_ui.gd" id="3_vnklj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_unb7u"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -142,6 +144,7 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
+script = ExtResource("3_vnklj")
 
 [node name="Panel" type="Panel" parent="UI/EndUI"]
 layout_mode = 1
@@ -163,6 +166,63 @@ offset_right = 40.0
 offset_bottom = 40.0
 alignment = 1
 
+[node name="Button" type="Button" parent="UI/EndUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 151.0
+offset_right = 100.0
+offset_bottom = 251.0
+grow_horizontal = 2
+text = "Replay"
+
+[node name="PauseUI" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_0ubgr")
+
+[node name="Button" type="Button" parent="UI/PauseUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Resume"
+
+[node name="Button2" type="Button" parent="UI/PauseUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -101.0
+offset_top = 70.0
+offset_right = 99.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Quit"
+
 [node name="Sounds" type="Node" parent="."]
 
 [node name="GunNoise" type="AudioStreamPlayer" parent="Sounds"]
@@ -170,3 +230,7 @@ stream = ExtResource("3_7k7q1")
 volume_db = -6.191
 
 [node name="BallNoise" type="AudioStreamPlayer" parent="Sounds"]
+
+[connection signal="pressed" from="UI/EndUI/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="UI/PauseUI/Button" to="UI/PauseUI" method="_on_button_pressed"]
+[connection signal="pressed" from="UI/PauseUI/Button2" to="UI/PauseUI" method="_on_button_2_pressed"]
