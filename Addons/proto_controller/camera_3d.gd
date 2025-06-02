@@ -2,6 +2,11 @@ extends Camera3D
 @onready var proto_controller: CharacterBody3D = $"../.."
 @onready var gun_noise: AudioStreamPlayer = $"../../Sounds/GunNoise"
 @onready var ball_noise: AudioStreamPlayer = $"../../Sounds/BallNoise"
+@onready var hit_marker: TextureRect = $HitMarker
+@onready var miss_marker: TextureRect = $MissMarker
+@onready var miss_timer: Timer = $MissTimer
+@onready var hit_timer: Timer = $HitTimer
+
 
 #VARIABLES:
 	#(DONE)
@@ -47,6 +52,10 @@ var ball
 var overshootPercent = 0
 var undershootPercent = 0
 
+func _ready() -> void:
+	hit_marker.visible = false
+	miss_marker.visible = false
+
 
 func _process(delta: float) -> void:
 	if proto_controller.hasStarted() and not proto_controller.hasEnded():
@@ -58,6 +67,8 @@ func _input(event):
 	var gameEnd = proto_controller.hasEnded()
 	var gamePaused = proto_controller.hasPaused()
 	if event.is_action_pressed("shoot") and gameStart and not gameEnd and not gamePaused:
+		hit_marker.visible = false
+		miss_marker.visible = false
 		shotsTaken += 1
 		gun_noise.play()
 		GetCameraCollision()
@@ -74,6 +85,7 @@ func GetCameraCollision():
 	#This works, so check for this and then don't get the overshoot if this happens
 	#So do this, or we try and create a giant invisible wall that they can hit, and otherwise it returns nothing.
 	if intersection.is_empty():
+		miss_marker.visible = true
 		print("Empty")
 	var ballShot = intersection.collider
 	center = ballShot.global_transform.origin
@@ -83,6 +95,9 @@ func GetCameraCollision():
 	if (not intersection.is_empty()) and (intersection.collider.name == "BallTrainBody"):
 		#Update the total time, what was shot, and number of shots hit.
 		print("Hit a target")
+		hit_marker.visible = true
+		hit_timer.start()
+		print("still going through script tho")
 		ball_noise.play()
 		shotsHit += 1
 		totalTime += ballShot.getTotalTime()
@@ -106,22 +121,30 @@ func GetCameraCollision():
 	
 	elif(not intersection.is_empty()) and (intersection.collider.name == "Over_Undershoot Plane"):
 		#Not actually shot the ball, but instead the plane on the same axis, so I wanna see it's position in comparison to ball position.
+		miss_marker.visible = true
+		miss_timer.start()
 		var planeShot = intersection["position"]
 		for node in get_tree().get_nodes_in_group("ball"):
 			ball = node
 		if ball != null:
 			print(evaluate_overshoot_or_undershoot(ball, planeShot))
-			
-			
+	
 	
 	#This is where you log a first shot being missed AND what the overshoot OR undershoot of the player's shot was.
 	else:
 		print("No ball hit")
+		miss_marker.visible = true
 		if isFirstShot:
 			totalFirstShots = totalFirstShots + 1
 			isFirstShot = false
 	
 	accuracy = float(shotsHit)/float(shotsTaken)
+
+func _on_hit_timer_timeout() -> void:
+	hit_marker.visible = false
+
+func _on_miss_timer_timeout() -> void:
+	miss_marker.visible = false
 
 
 #I think I need to get an initial position for where the raycast SHOULD hit the plane and thus get the direction from it;
