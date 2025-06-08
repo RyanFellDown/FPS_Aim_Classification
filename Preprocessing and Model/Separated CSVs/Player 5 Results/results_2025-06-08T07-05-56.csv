@@ -1,0 +1,2 @@
+Accuracy,Avg Precision,Avg Reaction Time,Avg First Shot Accuracy,Missed Shots,Avg Max Mouse Speed,Overshoot,Undershoot
+85.2941176470588%,54.4270060185728%,0.68965517241379ms,100.0%,5,3545.73109172953,20.0%,80.0%
