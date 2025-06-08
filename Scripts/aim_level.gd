@@ -120,8 +120,8 @@ func _on_training_ended():
 	stats = {
 		"Accuracy": str(results["Accuracy"]*100) + "%",
 		"Avg Precision": str(results["Precision"]*100) + "%",
-		"Avg Reaction Time": str(reactionTime) + "ms",
-		"Avg First Shot Accuracy": str(results["First Shot Accuracy"]*100)+"%",
+		"Avg Reaction Time": str(reactionTime*1000) + "ms",
+		#"Avg First Shot Accuracy": str(results["First Shot Accuracy"]*100)+"%",
 		"Missed Shots": missRate,
 		"Avg Max Mouse Speed": results["Average Top Mouse Speed"],
 		"Overshoot": str(overshot*100)+"%",
