@@ -1,5 +1,6 @@
 import preprocessing
 import csvHandler
+import model
 
 
 def __main__():
@@ -12,12 +13,12 @@ def __main__():
     print(dataFrames[0], dataFrames[1], dataFrames[2])
 
     #Decide whether to take the ML or DL route for classification.
-    modelType = 0
     while(modelType != 1 and modelType != 2):
         modelType = int(input("Type 1 for machine learning and 2 for deep learning."))
     if modelType == 1:
-        print("Machine Learning Time:")
+        print("Machine Learning Time:\n")
+        model.splitData(dataFrames[2])
     elif modelType == 2:
-        print("Deep Learning Time:")
+        print("Deep Learning Time:\n")
 
 __main__()
