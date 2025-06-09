@@ -10,14 +10,14 @@ distinguishing features. These aiming styles include:
 - Reaction Aim
 - Spray Aim
 
-#Machine Learning Approach
+## Machine Learning Approach
 
 Once these trials are labeled, they are run through multiple Machine Learning algorithms, including
 XGBoost, RandomForest, SVM, and KNN to determine which algorithm has the highest accuracy. To
 make the dataset more robust, synthetic data creation techniques were used and tested alongside
 the original testing data to determine whether accuracy truly increased or not.
 
-#Deep Learning Approach
+### Deep Learning Approach
 
 While Machine Learning methods worked fine, we realized that labeling the dataset via user videos
 gave us the option to attempt using neural networks for our project as well. Specifically, we
