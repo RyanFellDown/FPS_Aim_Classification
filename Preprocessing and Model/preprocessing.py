@@ -5,11 +5,10 @@ import os as os
 
 #-----Step 1-----
 #Basically reading in all the labeled CSVs to be preprocessed and combined.
-labeled = False
-
 def read_in_csvs():
     #Find the directory the CSV files are in, appending each read in CSV to a dataframe to later concatenate.
     dfs = []
+    labeled = False
     folderName = "./Labeled CSVs"
     csvDirectory = os.path.dirname(__file__)
     folder = os.path.join(csvDirectory, folderName)
@@ -17,7 +16,7 @@ def read_in_csvs():
     for file in os.listdir(folder):
         if file.endswith('.csv'):
             file_path = os.path.join(folder, file)
-            new = pd.read_csv(file_path, dtype={"Overshoot": str, "Undershoot": str})
+            new = pd.read_csv(file_path, dtype={"Overshoot": str, "Undershoot": str}, index_col=False)
             dfs.append(new)
 
     #If the first one contains a label, then we are looking at the labeled dataset, so different processes must be done.
@@ -38,7 +37,6 @@ def cleaning(dfs, labeled):
         totalDF = pd.concat([totalDF, df], join="inner")
 
     #Cleaning the totalDF, dropping an unused column and converting strings to floats.
-    print(totalDF.shape)
     totalDF = totalDF.drop(['Unnamed: 0'], axis=1)
     for column in totalDF:
         if (type(totalDF[column].values[0]) == type("")) and (totalDF[column].astype(str).str.contains("nan%").any()):
@@ -50,15 +48,18 @@ def cleaning(dfs, labeled):
             totalDF[column] = (totalDF[column].str.replace("ms", "", regex=False)).astype(float)
         elif type(totalDF[column].values[0]) == type("") and "%" in totalDF[column].values[0]:
             totalDF[column] = (totalDF[column].str.replace("%", "", regex=False)).astype(float)
+            print(f"Column {column} was converted to float.")
         elif type(totalDF[column].values[0]) == type("") and column != "Label":
             totalDF[column] = (totalDF[column]).astype(float)
-
+    
+    totalDF["Overshoot"] = totalDF["Overshoot"].astype(float)
+    totalDF["Undershoot"] = totalDF["Undershoot"].astype(float)
+    totalDF = totalDF.reset_index(drop=True)
 
     return normalization(totalDF, labeled)
 
 
-
-#-----Step 3-----
+#-----Step 4-----
 #Finally, normalize the data amongst all numbers, EXCEPT the label.
 def normalization(totalDF, labeled):
     #Initialize the dataframes as lists to start.
@@ -83,5 +84,15 @@ def normalization(totalDF, labeled):
         totalDF = pd.concat([normalizationDF.reset_index(drop=True), labelDF.reset_index(drop=True)], axis=1)
     else:
         totalDF = normalizationDF
+
+    #Just for now, don't normalize and get the entire CSV, for reference when labeling.
+    tempNormalizationDF = pd.concat([tempNormalizationDF.reset_index(drop=True), labelDF.reset_index(drop=True)], axis=1)
+    
+    csvDirectory = os.path.dirname(__file__)
+    fileName = os.path.join(csvDirectory, f"Entire CSV/FullCSV.csv")
+    if not os.path.isfile(fileName):
+        print(f"Doesn't exist, creating FullCSV.csv")
+        tempNormalizationDF.to_csv(fileName)
+    
 
     return [normalizationDF, tempNormalizationDF, totalDF]
