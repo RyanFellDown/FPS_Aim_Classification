@@ -14,7 +14,7 @@ def splitData(DF):
     y = LabelEncoder().fit_transform(y)
 
     # Split into training and test sets. Data is already normalized; no need for scaling at this point.
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
 
     return modelSelection(X_train, X_test, y_train, y_test)
 
@@ -65,7 +65,7 @@ def modelSelection(X_train, X_test, y_train, y_test):
 
     #Then, test SVM with different kernels.
     svmParams = [
-        {'kernel': ['rbf', 'poly'], 'gamma': [0.0001, 0.001, 0.01, 0.1], 'C': [1, 10, 100, 1000],}
+        {'kernel': ['rbf', 'poly'], 'gamma': [0.01, 0.1], 'C': [1, 10],}
     ]
 
     svmModel = GridSearchCV(svm.SVC(), svmParams, cv=5)
@@ -73,7 +73,6 @@ def modelSelection(X_train, X_test, y_train, y_test):
     print("Best SVM model is: ", svmModel.best_score_)
 
 
-    
     #Finally, test XGBoost with different hyperparameters and K-Fold validation.
     xgbParams = {
         "n_estimators": [50, 100, 200],
@@ -86,7 +85,8 @@ def modelSelection(X_train, X_test, y_train, y_test):
     xgb_classifier_model = xgb.XGBClassifier(
         random_state=42,
         objective = "multi:softmax",
-        num_class = 5
+        num_class = 5,
+        tree_method = "hist"
     )
 
     xgbGridSearch = RandomizedSearchCV(
@@ -106,4 +106,3 @@ def modelSelection(X_train, X_test, y_train, y_test):
     print(f"Best KNN parameter and accuracy is: {bestKNN, KNNScores[bestKNN]}")
     print("Best SVM model is: ", svmModel.best_score_)  
     print("Best XGBoost parameter and score is: ", xgbGridSearch.best_score_)
-    
