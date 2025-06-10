@@ -12,6 +12,8 @@ def __main__():
     dataFrames = preprocessing.read_in_csvs()
     print(dataFrames[0], dataFrames[1], dataFrames[2])
 
+    
+    modelType = 0
     #Decide whether to take the ML or DL route for classification.
     while(modelType != 1 and modelType != 2):
         modelType = int(input("Type 1 for machine learning and 2 for deep learning."))
