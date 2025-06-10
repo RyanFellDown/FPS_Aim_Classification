@@ -1,5 +1,6 @@
 import preprocessing
 import csvHandler
+import synth
 import model
 
 
@@ -13,13 +14,18 @@ def __main__():
     print(dataFrames[0], dataFrames[1], dataFrames[2])
 
     
-    modelType = 0
+    #Create synthetic data points to make the data more robust.
+    robustDF = synth.gaussian_synth(dataFrames[1], 7)
+    print(robustDF.shape)
+
+
     #Decide whether to take the ML or DL route for classification.
+    modelType = 1
     while(modelType != 1 and modelType != 2):
         modelType = int(input("Type 1 for machine learning and 2 for deep learning."))
     if modelType == 1:
         print("Machine Learning Time:\n")
-        model.splitData(dataFrames[2])
+        model.splitData(robustDF)
     elif modelType == 2:
         print("Deep Learning Time:\n")
 
