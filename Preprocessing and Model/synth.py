@@ -7,7 +7,6 @@ from sklearn.model_selection import train_test_split
 
 # Method 1: label-based distortion
 def gaussian_synth(df, new_samples_to_create):
-    #Scale the data, if synthetic was used.
     labeledColumn = df["Label"]
     df = df.drop(["Label"], axis=1)
 
