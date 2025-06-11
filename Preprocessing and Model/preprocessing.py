@@ -1,6 +1,7 @@
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import os as os
+import sklearn
 
 
 #-----Step 1-----

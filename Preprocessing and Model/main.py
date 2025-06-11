@@ -2,7 +2,10 @@ import preprocessing
 import csvHandler
 import synth
 import model
-
+from fischer import fischer_score_df
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
 
 def __main__():
     #First, combine the CSVs for each user.
@@ -15,18 +18,18 @@ def __main__():
 
     
     #Create synthetic data points to make the data more robust.
-    robustDF = synth.gaussian_synth(dataFrames[1], 7)
+    robustDF = synth.gaussian_synth(dataFrames[1], 7, seed=42)
     print(robustDF.shape)
 
+    top_features = fischer_score_df(robustDF)
+    print(top_features)
 
-    #Decide whether to take the ML or DL route for classification.
-    modelType = 1
-    while(modelType != 1 and modelType != 2):
-        modelType = int(input("Type 1 for machine learning and 2 for deep learning."))
-    if modelType == 1:
-        print("Machine Learning Time:\n")
-        model.splitData(robustDF)
-    elif modelType == 2:
-        print("Deep Learning Time:\n")
+    #Plotted features using seaborn. Image saved to Pairplot.png 
+    #pairplot = sns.pairplot(robustDF, hue='Label', diag_kind='kde', corner=True)
+    #pairplot.figure.tight_layout()
+    #pairplot.savefig("pairplot.png", dpi=300)
+
+    print("Machine Learning Time:\n")
+    model.splitData(robustDF)
 
 __main__()

@@ -96,7 +96,7 @@ def modelSelection(X_train, X_test, y_train, y_test):
         scoring="accuracy",
         n_iter = 300, #This selects 300 different random combinations of the grid search parameters.
         n_jobs = -1, #I think this disables parallel processing?
-        verbose = 2,
+        verbose = 0,
         random_state=42
     )
         
